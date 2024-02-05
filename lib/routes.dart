@@ -11,10 +11,13 @@ final routes = GoRouter(
   redirect: (context, state) {
     final isAuthenticated = getIt<AuthService>().isAuthenticated;
     final isLoginRoute = state.fullPath == '/login';
+    final isRegisterRoute = state.fullPath == '/register';
 
-    if (!isAuthenticated && !isLoginRoute) return '/login';
+    if (isAuthenticated && (isLoginRoute || isRegisterRoute)) return '/';
 
-    if (isAuthenticated && isLoginRoute) return '/';
+    if (!isAuthenticated && !isLoginRoute && !isRegisterRoute) return '/login';
+
+    // if (!isAuthenticated) return null;
 
     return null;
   },
@@ -23,7 +26,8 @@ final routes = GoRouter(
       path: '/',
       pageBuilder: (context, state) {
         final isAdmin = getIt<AuthService>().isAdmin;
-        return MaterialPage(child: HomePage(isAdmin: isAdmin), fullscreenDialog: true);
+        return MaterialPage(
+            child: HomePage(isAdmin: isAdmin), fullscreenDialog: true);
       },
     ),
     GoRoute(
