@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:van_gogh/get_it.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -15,6 +17,7 @@ class LoginPage extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
+                validator: ValidationBuilder().email().build(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Email",
@@ -22,6 +25,7 @@ class LoginPage extends StatelessWidget {
               ),
               TextFormField(
                 obscureText: true,
+                validator: ValidationBuilder().minLength(8).build(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Senha",
@@ -30,6 +34,10 @@ class LoginPage extends StatelessWidget {
               TextButton(
                 onPressed: () => context.push('/register'),
                 child: const Text('Criar conta'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text("Entrar"),
               )
             ],
           ),

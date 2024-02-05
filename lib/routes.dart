@@ -16,9 +16,7 @@ final routes = GoRouter(
     if (isAuthenticated && (isLoginRoute || isRegisterRoute)) return '/';
 
     if (!isAuthenticated && !isLoginRoute && !isRegisterRoute) return '/login';
-
-    // if (!isAuthenticated) return null;
-
+    
     return null;
   },
   routes: [
