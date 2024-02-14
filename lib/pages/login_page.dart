@@ -1,10 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:van_gogh/get_it.dart';
+import 'package:van_gogh/services/auth_service.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
+  final _emailValidation = ValidationBuilder().required().email();
+  final _passwordValidation = ValidationBuilder().required().minLength(6);
+  bool get isValid => _formKey.currentState?.validate() ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -12,34 +27,64 @@ class LoginPage extends StatelessWidget {
       body: Container(
         alignment: Alignment.center,
         child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.primary),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          padding: const EdgeInsets.all(10),
           width: 300,
           height: 500,
-          child: Column(
-            children: [
-              TextFormField(
-                validator: ValidationBuilder().email().build(),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Email",
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              children: [
+                TextFormField(
+                  validator: _emailValidation.build(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Email",
+                  ),
+                  onChanged: (value) => setState(() => _email = value),
                 ),
-              ),
-              TextFormField(
-                obscureText: true,
-                validator: ValidationBuilder().minLength(8).build(),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Senha",
+                TextFormField(
+                  obscureText: true,
+                  validator: _passwordValidation.build(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Senha",
+                  ),
+                  onChanged: (value) => setState(() => _password = value),
                 ),
-              ),
-              TextButton(
-                onPressed: () => context.push('/register'),
-                child: const Text('Criar conta'),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text("Entrar"),
-              )
-            ],
+                TextButton(
+                  onPressed: () => context.push('/register'),
+                  child: const Text('Criar conta'),
+                ),
+                ElevatedButton(
+                  onPressed: isValid
+                      ? () async {
+                          try {
+                            await getIt<AuthService>()
+                                .login(email: _email, password: _password);
+                          } on AuthException catch (e) {
+                            if (context.mounted) {
+                              if (kDebugMode) {
+                                print(e);
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Email ou senha incorretos"),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      : null,
+                  child: const Text("Entrar"),
+                )
+              ],
+            ),
           ),
         ),
       ),

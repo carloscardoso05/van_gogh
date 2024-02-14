@@ -1,12 +1,106 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:van_gogh/get_it.dart';
+import 'package:van_gogh/services/auth_service.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  var _email = '';
+  var _password = '';
+  final _emailValidation = ValidationBuilder().required().email();
+  final _passwordValidation = ValidationBuilder().required().minLength(6);
+  bool get isValid => _formKey.currentState?.validate() ?? false;
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder(
-      child: Text('RegisterPage'),
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.primary),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          padding: const EdgeInsets.all(10),
+          width: 300,
+          height: 500,
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              children: [
+                TextFormField(
+                  validator: _emailValidation.build(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Email",
+                  ),
+                  onChanged: (value) => setState(() => _email = value),
+                ),
+                TextFormField(
+                  obscureText: true,
+                  validator: _passwordValidation.build(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Senha",
+                  ),
+                  onChanged: (value) => setState(() => _password = value),
+                ),
+                TextFormField(
+                  obscureText: true,
+                  validator: _passwordValidation
+                      .add((value) => value == _password
+                          ? null
+                          : 'As senhas devem ser iguais')
+                      .build(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Confirmar Senha",
+                  ),
+                  onChanged: (value) => setState(() => _password = value),
+                ),
+                TextButton(
+                  onPressed: () => context.push('/login'),
+                  child: const Text('Já tenho uma conta'),
+                ),
+                ElevatedButton(
+                  onPressed: isValid
+                      ? () async {
+                          try {
+                            await getIt<AuthService>()
+                                .register(email: _email, password: _password);
+                          } on AuthException catch (e) {
+                            if (context.mounted) {
+                              if (kDebugMode) {
+                                print(e);
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Erro ao cadastrar"),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      : null,
+                  child: const Text("Cadastrar"),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
