@@ -17,7 +17,7 @@ class AuthService extends ChangeNotifier {
 
   register({required String email, required String password}) async {
     await supabase.auth.signUp(email: email, password: password);
-    login(email: email, password: password);
+    await login(email: email, password: password);
   }
 
   logOut() async {

@@ -1,10 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:van_gogh/get_it.dart';
 import 'package:van_gogh/services/auth_service.dart';
+import 'package:van_gogh/util/exception_snack_bar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -81,15 +81,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 .register(email: _email, password: _password);
                           } on AuthException catch (e) {
                             if (context.mounted) {
-                              if (kDebugMode) {
-                                print(e);
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Erro ao cadastrar"),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(createAuthExceptionSnackbar(e));
                             }
                           }
                         }
