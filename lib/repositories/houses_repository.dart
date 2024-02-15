@@ -5,11 +5,13 @@ import 'package:van_gogh/supabase.dart';
 import 'package:van_gogh/transformers/house_transformer.dart';
 
 abstract class HousesRepository {
-  PaymentsRepository paymentsRepository;
-  HoldersRepository holdersRepository;
+  final PaymentsRepository _paymentsRepository;
+  final HoldersRepository _holdersRepository;
   HousesRepository(
-      {required this.holdersRepository, required this.paymentsRepository});
-  List<House> houses = [];
+      {required HoldersRepository holdersRepository,
+      required PaymentsRepository paymentsRepository})
+      : _holdersRepository = holdersRepository,
+        _paymentsRepository = paymentsRepository;
   Future<List<House>> getAll();
 }
 
@@ -22,8 +24,8 @@ class LocalHousesRepository extends HousesRepository {
     final housesData = await supabase
         .from('houses')
         .select('*, holder:holder_id(*), payments(*)');
-    final payments = await paymentsRepository.getAll();
-    final holders = await holdersRepository.getAll();
+    final payments = await _paymentsRepository.getAll();
+    final holders = await _holdersRepository.getAll();
     final houses = housesData.map((houseJson) {
       return HouseTranformer.fromJson(
         houseJson,

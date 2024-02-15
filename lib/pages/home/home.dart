@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:van_gogh/get_it.dart';
-import 'package:van_gogh/repositories/houses_repository.dart';
+import 'package:van_gogh/pages/home/admin_view.dart';
+import 'package:van_gogh/pages/home/holder_view.dart';
 import 'package:van_gogh/services/auth_service.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, required this.isAdmin});
-  final bool isAdmin;
+  HomePage({super.key});
+  final bool isAdmin = getIt<AuthService>().isAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +20,10 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: FutureBuilder(
-          future: getIt<HousesRepository>().getAll(),
-          builder: (context, snapshot) {
-            if (snapshot.data != null) {
-              return Text(snapshot.data.toString());
-            }
-
-            return const Text('Carregando');
-          },
+        child: Visibility(
+          visible: isAdmin,
+          replacement: const HolderView(),
+          child: AdminView(),
         ),
       ),
     );

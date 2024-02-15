@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:van_gogh/pages/home_page.dart';
-import 'package:van_gogh/pages/login_page.dart';
-import 'package:van_gogh/pages/register_page.dart';
+import 'package:van_gogh/pages/home/home.dart';
+import 'package:van_gogh/pages/auth/login.dart';
+import 'package:van_gogh/pages/auth/register.dart';
 import 'package:van_gogh/get_it.dart';
 import 'package:van_gogh/services/auth_service.dart';
 
@@ -16,16 +16,14 @@ final routes = GoRouter(
     if (isAuthenticated && (isLoginRoute || isRegisterRoute)) return '/';
 
     if (!isAuthenticated && !isLoginRoute && !isRegisterRoute) return '/login';
-    
+
     return null;
   },
   routes: [
     GoRoute(
       path: '/',
       pageBuilder: (context, state) {
-        final isAdmin = getIt<AuthService>().isAdmin;
-        return MaterialPage(
-            child: HomePage(isAdmin: isAdmin), fullscreenDialog: true);
+        return MaterialPage(child: HomePage(), fullscreenDialog: true);
       },
     ),
     GoRoute(

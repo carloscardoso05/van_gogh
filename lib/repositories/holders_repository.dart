@@ -6,6 +6,8 @@ abstract class HoldersRepository {
   Future<List<Holder>> getAll();
   Future<List<Holder>> getByHouseId(int id);
   Future<Holder> getById(int id);
+  Future<Holder> getByUserId(int id);
+  Future<void> addHolder(Holder holder);
 }
 
 class LocalHoldersRepository extends HoldersRepository {
@@ -34,5 +36,18 @@ class LocalHoldersRepository extends HoldersRepository {
         await supabase.from('holders').select('*').eq('id', id).single();
     Holder holder = HolderTranformer.fromJson(data);
     return holder;
+  }
+
+  @override
+  Future<Holder> getByUserId(int id) async {
+    final data =
+        await supabase.from('holders').select('*').eq('user_id', id).single();
+    Holder holder = HolderTranformer.fromJson(data);
+    return holder;
+  }
+
+  @override
+  Future<void> addHolder(Holder holder) async {
+    await supabase.from('holders').insert(HolderTranformer.toMap(holder));
   }
 }

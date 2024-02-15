@@ -7,6 +7,8 @@ String translateAuthException(AuthException exception) {
       return "Esse email ainda não foi confirmado";
     case "Invalid login credentials":
       return "Email ou senha inválidos";
+    case "User already registered":
+      return "Já existe uma conta com este email";
     default:
       return exception.message;
   }
