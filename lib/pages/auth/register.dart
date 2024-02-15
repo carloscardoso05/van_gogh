@@ -17,8 +17,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   var _email = '';
   var _password = '';
+  var _name = '';
   final _emailValidation = ValidationBuilder().required().email();
   final _passwordValidation = ValidationBuilder().required().minLength(6);
+  final _nameRegex = RegExp(r'^([a-zA-Z\s]+)$', caseSensitive: false);
+  late final _nameValidation = ValidationBuilder()
+      .required()
+      .minLength(3)
+      .regExp(_nameRegex, "Nome inválido");
   bool get isValid => _formKey.currentState?.validate() ?? false;
 
   @override
@@ -39,6 +45,14 @@ class _RegisterPageState extends State<RegisterPage> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               children: [
+                TextFormField(
+                  validator: _nameValidation.build(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Nome",
+                  ),
+                  onChanged: (value) => setState(() => _name = value),
+                ),
                 TextFormField(
                   validator: _emailValidation.build(),
                   decoration: const InputDecoration(
@@ -77,8 +91,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: isValid
                       ? () async {
                           try {
-                            await getIt<AuthService>()
-                                .register(email: _email, password: _password);
+                            await getIt<AuthService>().register(
+                              email: _email,
+                              password: _password,
+                              name: _name,
+                            );
                           } on AuthException catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context)
