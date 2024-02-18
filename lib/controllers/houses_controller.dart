@@ -27,8 +27,8 @@ class HousesController {
     return _houses.firstWhere((house) => house.id == id);
   }
 
-  House getHouseByHolder(Holder holder) {
-    return _houses.firstWhere((house) => house.holder.id == holder.id);
+  House? getHouseByHolder(Holder holder) {
+    return _houses.firstWhere((house) => house.holder?.id == holder.id);
   }
 
   List<House> getHouses() {

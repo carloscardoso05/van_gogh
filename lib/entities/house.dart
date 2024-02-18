@@ -5,7 +5,7 @@ class House {
   final int id;
   final int block;
   final int number;
-  Holder holder;
+  Holder? holder;
   List<Payment> payments;
   String get houseCode => '$block$number';
 

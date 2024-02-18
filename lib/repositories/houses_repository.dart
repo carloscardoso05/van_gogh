@@ -29,7 +29,9 @@ class LocalHousesRepository extends HousesRepository {
     final houses = housesData.map((houseJson) {
       return HouseTranformer.fromJson(
         houseJson,
-        holders.firstWhere((element) => element.id == houseJson['holder_id']),
+        holders
+            .where((element) => element.id == houseJson['holder_id'])
+            .singleOrNull,
         payments
             .where((element) => element.houseId == houseJson['id'])
             .toList(),

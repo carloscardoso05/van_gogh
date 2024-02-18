@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:van_gogh/entities/resident.dart';
@@ -11,6 +13,19 @@ class AuthService extends ChangeNotifier {
   bool isAuthenticated = false;
   bool isAdmin = true;
   User get grantedUser => auth!.user!;
+
+  AuthService() {
+    recoverSession();
+  }
+
+  recoverSession() async {
+    final session = supabase.auth.currentSession;
+    if (session != null) {
+      auth = await supabase.auth.recoverSession(jsonEncode(session));
+      isAuthenticated = true;
+      notifyListeners();
+    }
+  }
 
   login({required String email, required String password}) async {
     final authResponse = await supabase.auth

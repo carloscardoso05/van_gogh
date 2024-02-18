@@ -9,7 +9,7 @@ class HouseTranformer {
 
   // static House fromJson(String source) => fromMap(json.decode(source));
   static House fromJson(
-          Map<String, dynamic> source, Holder holder, List<Payment> payments) =>
+          Map<String, dynamic> source, Holder? holder, List<Payment> payments) =>
       fromMap(
         source,
         holder,
@@ -20,12 +20,12 @@ class HouseTranformer {
     return {
       'block': house.block,
       'number': house.number,
-      'holder_id': house.holder.id,
+      'holder_id': house.holder?.id ?? '',
     };
   }
 
   static House fromMap(
-      Map<String, dynamic> map, Holder holder, List<Payment> payments) {
+      Map<String, dynamic> map, Holder? holder, List<Payment> payments) {
     return House(
       id: map['id'],
       block: map['block'],
