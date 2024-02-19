@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as locale;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,6 +13,7 @@ Future<void> main() async {
   Intl.defaultLocale = 'pt_BR';
   await locale.initializeDateFormatting();
   ValidationBuilder.setLocale('pt-br');
+  GoRouter.optionURLReflectsImperativeAPIs = true;
 
   await Supabase.initialize(
     url: Env.apiUrl,

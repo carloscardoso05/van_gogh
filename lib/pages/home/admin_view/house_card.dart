@@ -19,7 +19,7 @@ class HouseCard extends StatelessWidget {
             trailing: Text(house.houseCode),
             isThreeLine: true,
             subtitle: HousePaymentDescription(house: house),
-            onTap: () => context.push('/house_details', extra: house)),
+            onTap: () => context.push('/houses/${house.houseCode}')),
       );
     }
     return const CircularProgressIndicator();

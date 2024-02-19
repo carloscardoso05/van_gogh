@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:van_gogh/entities/house.dart';
+import 'package:van_gogh/transformers/house_transformer.dart';
 
 class HouseDetails extends StatelessWidget {
   const HouseDetails({super.key, required this.house});
@@ -7,6 +8,8 @@ class HouseDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Placeholder(
+      child: Text(HouseTranformer.toJson(house).toString()),
+    );
   }
 }
