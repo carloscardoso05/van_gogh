@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:van_gogh/get_it.dart';
 import 'package:van_gogh/services/auth_service.dart';
-import 'package:van_gogh/util/exception_snack_bar.dart';
+import 'package:van_gogh/helpers/exception_snack_bar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

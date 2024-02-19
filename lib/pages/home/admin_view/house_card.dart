@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:van_gogh/entities/house.dart';
 import 'package:van_gogh/entities/payment.dart';
-import 'package:van_gogh/util/formating.dart';
-import 'package:van_gogh/util/get_payment_icon.dart';
+import 'package:van_gogh/helpers/formating.dart';
+import 'package:van_gogh/helpers/payment_helpers.dart';
 
 class HouseCard extends StatelessWidget {
   const HouseCard({super.key, required this.house});
@@ -48,19 +48,4 @@ class HousePaymentDescription extends StatelessWidget {
     }
     return const Text('Pago');
   }
-}
-
-Payment? getMostDelayedPayment(List<Payment> payments) {
-  /// Retorna o pagamento atrasado mais antigo, se houver
-  Payment? latest;
-  for (final payment in payments) {
-    if (latest == null && DateTime.now().isAfter(payment.dueDate)) {
-      latest = payment;
-      continue;
-    }
-    if (latest != null && latest.dueDate.isAfter(payment.dueDate)) {
-      latest = payment;
-    }
-  }
-  return latest;
 }
