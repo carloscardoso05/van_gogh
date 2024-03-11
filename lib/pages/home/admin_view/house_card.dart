@@ -36,25 +36,15 @@ class HousePaymentDescription extends StatelessWidget {
 
   final House house;
   late final Payment payment;
-  String get complement {
-    if (payment.state == PaymentState.paid) {
-      return 'Último pagamento: ${dateFormat.format(payment.paidDate!)}';
-    }
-    if (payment.state == PaymentState.pendingVerification) {
-      return 'Verificação pendente';
-    }
-    return 'Vencimento: ${dateFormat.format(payment.dueDate)}'
-        '\n'
-        'Valor: ${numberFormat.format(payment.value)}';
-  }
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${house.holder ?? "Sem proprietário"}\n$complement',
+      '${house.holder ?? "Sem proprietário"}\n${getPaymentDescription(payment)}',
     );
   }
 }
+
 
 class PaymentStateText extends StatelessWidget {
   const PaymentStateText({super.key, required this.state});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:van_gogh/entities/payment.dart';
+import 'package:van_gogh/helpers/formating.dart';
 
 Payment? getMostDelayedPayment(List<Payment> payments) {
   /// Retorna o pagamento atrasado mais antigo, se houver
@@ -35,4 +36,19 @@ Icon getPaymentIcon(PaymentState? state) {
   }
   //Avaliação pendente
   return const Icon(Icons.document_scanner_outlined, color: Colors.purple);
+}
+
+
+String getPaymentDescription(Payment payment) {
+  if (payment.state == PaymentState.paid) {
+    return 'Pago em: ${dateFormat.format(payment.paidDate!)}'
+        '\n'
+        'Valor: ${numberFormat.format(payment.value)}';
+  }
+  if (payment.state == PaymentState.pendingVerification) {
+    return 'Valor: ${numberFormat.format(payment.value)}';
+  }
+  return 'Vencimento: ${dateFormat.format(payment.dueDate)}'
+      '\n'
+      'Valor: ${numberFormat.format(payment.value)}';
 }
