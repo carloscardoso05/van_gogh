@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:van_gogh/entities/payment.dart';
 
 // 20/10/2030
 final DateFormat shortDateFormat = DateFormat.yMd();
@@ -31,4 +32,13 @@ String getMonthPtBr(int i) {
     'Novembro',
     'Dezembro'
   ][i - 1];
+}
+
+String getPaymentStatePtBr(PaymentState state) {
+  return switch (state) {
+    PaymentState.late => "Atrasado",
+    PaymentState.pending => "Pendente",
+    PaymentState.pendingVerification => "Verificação pendente",
+    PaymentState.paid => "Pago"
+  };
 }
