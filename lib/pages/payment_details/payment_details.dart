@@ -8,6 +8,8 @@ import 'package:van_gogh/pages/home/admin_view/house_card.dart';
 import 'package:van_gogh/supabase.dart';
 import 'package:http/http.dart' as http;
 
+final acceptedFileTypes = {'pdf', 'png', 'jpeg', 'jpg'};
+
 class PaymentDetails extends StatelessWidget {
   PaymentDetails({super.key, required this.payment, required this.house}) {
     url = supabase.storage
@@ -38,15 +40,23 @@ class PaymentDetails extends StatelessWidget {
                   return const CircularProgressIndicator();
                 }
                 final code = snapshot.data!.statusCode;
-                if (code == 404 || code == 400) {
+                if (code != 200) {
                   return const Text('Documento não encontrado');
                 }
-                if (code != 200) {
-                  return const Text('Erro ao buscar documento');
+
+                final extension = url.split('.').last;
+                if (!acceptedFileTypes.contains(extension)) {
+                  return const Text('Documento inválido');
+                }
+                if (extension == 'pdf') {
+                  return Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SfPdfViewer.network(url),
+                  );
                 }
                 return Padding(
                   padding: const EdgeInsets.all(20),
-                  child: SfPdfViewer.network(url),
+                  child: Image.network(url),
                 );
               },
             ),
