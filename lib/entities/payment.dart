@@ -32,7 +32,6 @@ class Payment {
     return PaymentState.pending;
   }
 
-
   Payment({
     required this.id,
     required this.houseId,

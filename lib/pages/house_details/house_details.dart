@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:van_gogh/entities/house.dart';
 import 'package:van_gogh/entities/payment.dart';
 import 'package:van_gogh/helpers/payment_helpers.dart';
-import 'package:van_gogh/pages/home/admin_view/house_card.dart';
+import 'package:van_gogh/pages/payment_details/payment_details.dart';
 
 class HouseDetails extends StatelessWidget {
   HouseDetails({super.key, required this.house}) {
@@ -31,30 +31,19 @@ class HouseDetails extends StatelessWidget {
                 return Column(
                   children: [
                     const Text('Pagamento mais atrasado'),
-                    PaymentCard(payment: payment!),
+                    PaymentCard(
+                      payment: payment!,
+                      houseCode: house.houseCode,
+                    ),
                   ],
                 );
               },
             ),
             const Text("Todos os pagamentos"),
-            ...house.payments.map((payment) => PaymentCard(payment: payment))
+            ...house.payments.map((payment) =>
+                PaymentCard(payment: payment, houseCode: house.houseCode))
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PaymentCard extends StatelessWidget {
-  const PaymentCard({super.key, required this.payment});
-  final Payment payment;
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: PaymentStateText(state: payment.state),
-        isThreeLine: true,
-        subtitle: Text(getPaymentDescription(payment)),
       ),
     );
   }

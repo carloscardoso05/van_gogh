@@ -6,6 +6,7 @@ import 'package:van_gogh/pages/auth/login.dart';
 import 'package:van_gogh/pages/auth/register.dart';
 import 'package:van_gogh/get_it.dart';
 import 'package:van_gogh/pages/house_details/house_details.dart';
+import 'package:van_gogh/pages/payment_details/payment_details.dart';
 import 'package:van_gogh/services/auth_service.dart';
 
 final routes = GoRouter(
@@ -45,10 +46,29 @@ final routes = GoRouter(
             .getHouses()
             .firstWhere((h) => h.houseCode == state.pathParameters['code']);
         return MaterialPage(
-            child: HouseDetails(
-              house: house,
-            ),
-            fullscreenDialog: true);
+          child: HouseDetails(
+            house: house,
+          ),
+          fullscreenDialog: true,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/houses/:code/payments/:payment_id',
+      pageBuilder: (context, state) {
+        final house = getIt<HousesController>()
+            .getHouses()
+            .firstWhere((h) => h.houseCode == state.pathParameters['code']);
+        final payment = house.payments.firstWhere(
+          (p) => p.id.toString() == state.pathParameters['payment_id'],
+        );
+        return MaterialPage(
+          child: PaymentDetails(
+            payment: payment,
+            house: house,
+          ),
+          fullscreenDialog: true,
+        );
       },
     ),
   ],
