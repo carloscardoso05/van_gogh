@@ -6,6 +6,7 @@ abstract class PaymentsRepository {
   Future<List<Payment>> getAll();
   Future<List<Payment>> getByHouseId(int id);
   Future<Payment> getById(int id);
+  Future<Payment> update(int id, Payment newPayment);
 }
 
 class LocalPaymentsRepository extends PaymentsRepository {
@@ -29,6 +30,18 @@ class LocalPaymentsRepository extends PaymentsRepository {
   Future<Payment> getById(int id) async {
     final data =
         await supabase.from('payments').select('*').eq('id', id).single();
+    Payment payment = PaymentTranformer.fromJson(data);
+    return payment;
+  }
+
+  @override
+  Future<Payment> update(int id, Payment newPayment) async {
+    final data = await supabase
+        .from('payments')
+        .update(PaymentTranformer.toMap(newPayment))
+        .eq('id', id)
+        .select()
+        .single();
     Payment payment = PaymentTranformer.fromJson(data);
     return payment;
   }

@@ -1,14 +1,27 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:van_gogh/controllers/houses_controller.dart';
 import 'package:van_gogh/entities/house.dart';
 import 'package:van_gogh/entities/payment.dart';
+import 'package:van_gogh/get_it.dart';
+import 'package:van_gogh/helpers/formating.dart';
 import 'package:van_gogh/helpers/payment_helpers.dart';
 import 'package:van_gogh/pages/home/admin_view/house_card.dart';
+import 'package:van_gogh/repositories/payments_repository.dart';
 import 'package:van_gogh/supabase.dart';
 import 'package:http/http.dart' as http;
 
 final acceptedFileTypes = {'pdf', 'png', 'jpeg', 'jpg'};
+
+deleteSameNameFiles(String fullPath) async {
+  final pos = fullPath.lastIndexOf('.');
+  final pathWithoutSuffix = (pos != -1) ? fullPath.substring(0, pos) : fullPath;
+  final paths =
+      acceptedFileTypes.map((ext) => '$pathWithoutSuffix.$ext').toList();
+  await supabase.storage.from('pagamentos').remove(paths);
+}
 
 class PaymentDetails extends StatelessWidget {
   PaymentDetails({super.key, required this.payment, required this.house}) {
@@ -31,6 +44,38 @@ class PaymentDetails extends StatelessWidget {
             payment: payment,
             houseCode: house.houseCode,
             clickable: false,
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              FilePickerResult? result = await FilePicker.platform.pickFiles(
+                allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
+                type: FileType.custom,
+              );
+
+              if (result != null) {
+                final file = result.files.single;
+                if (file.bytes == null) {
+                  throw Exception('Arquivo vazio');
+                }
+                final date = shortDateFormat
+                    .format(payment.dueDate)
+                    .replaceAll('/', '-');
+                final name = 'comprovante_pagamento_$date.${file.extension}';
+                if (name.contains(RegExp(r'[/\\]+'))) {
+                  throw Exception(
+                      'Nome do arquivo não pode conter "/" nem "\\"');
+                }
+                final path = '${house.houseCode}/$name';
+                await deleteSameNameFiles(path);
+                await supabase.storage
+                    .from('pagamentos')
+                    .uploadBinary(path, file.bytes!);
+                payment.filePath = name;
+                await getIt<PaymentsRepository>().update(payment.id, payment);
+                await getIt<HousesController>().loadHouses();
+              }
+            },
+            child: const Text('Enviar comprovante'),
           ),
           Expanded(
             child: FutureBuilder(
