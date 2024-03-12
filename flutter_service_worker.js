@@ -8,7 +8,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "9254b72249946e7ce200fb13c1f16423
 "assets/AssetManifest.json": "b141dc2a8618f13608e9c1bef79b1158",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
 "assets/fonts/MaterialIcons-Regular.otf": "d3d1bf83dbb604e984101459ad447ea1",
-"assets/NOTICES": "c1333f8f38b1091a169604dcca5e264b",
+"assets/NOTICES": "07a214d6d5832a7929f87473307b0e38",
 "assets/packages/syncfusion_flutter_pdfviewer/assets/highlight.png": "7384946432b51b56b0990dca1a735169",
 "assets/packages/syncfusion_flutter_pdfviewer/assets/squiggly.png": "c9602bfd4aa99590ca66ce212099885f",
 "assets/packages/syncfusion_flutter_pdfviewer/assets/strikethrough.png": "cb39da11cd936bd01d1c5a911e429799",
@@ -30,9 +30,9 @@ const RESOURCES = {"assets/AssetManifest.bin": "9254b72249946e7ce200fb13c1f16423
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "9070c5d0536cc0e2c9ff70c5d87eb478",
-"/": "9070c5d0536cc0e2c9ff70c5d87eb478",
-"main.dart.js": "baefcf066e1fca6b39d78552fe66adcf",
+"index.html": "65f9e26a706977f4eb6bd70a6f3789f5",
+"/": "65f9e26a706977f4eb6bd70a6f3789f5",
+"main.dart.js": "35753b0987e932b73c25de935a226db5",
 "manifest.json": "72cedbe08125b1992411fe9d1de3ef30",
 "version.json": "ab7b79d6963f5ca5c6c1333e684bd677"};
 // The application shell files that are downloaded before a service worker can
