@@ -10,6 +10,7 @@ import 'package:van_gogh/helpers/formating.dart';
 import 'package:van_gogh/helpers/payment_helpers.dart';
 import 'package:van_gogh/pages/home/admin_view/house_card.dart';
 import 'package:van_gogh/repositories/payments_repository.dart';
+import 'package:van_gogh/services/auth_service.dart';
 import 'package:van_gogh/supabase.dart';
 import 'package:http/http.dart' as http;
 
@@ -45,38 +46,7 @@ class PaymentDetails extends StatelessWidget {
             houseCode: house.houseCode,
             clickable: false,
           ),
-          ElevatedButton(
-            onPressed: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
-                type: FileType.custom,
-              );
-
-              if (result != null) {
-                final file = result.files.single;
-                if (file.bytes == null) {
-                  throw Exception('Arquivo vazio');
-                }
-                final date = shortDateFormat
-                    .format(payment.dueDate)
-                    .replaceAll('/', '-');
-                final name = 'comprovante_pagamento_$date.${file.extension}';
-                if (name.contains(RegExp(r'[/\\]+'))) {
-                  throw Exception(
-                      'Nome do arquivo não pode conter "/" nem "\\"');
-                }
-                final path = '${house.houseCode}/$name';
-                await deleteSameNameFiles(path);
-                await supabase.storage
-                    .from('pagamentos')
-                    .uploadBinary(path, file.bytes!);
-                payment.filePath = name;
-                await getIt<PaymentsRepository>().update(payment.id, payment);
-                await getIt<HousesController>().loadHouses();
-              }
-            },
-            child: const Text('Enviar comprovante'),
-          ),
+          ActionButton(payment: payment, house: house),
           Expanded(
             child: FutureBuilder(
               future: http.get(Uri.parse(url)),
@@ -109,6 +79,88 @@ class PaymentDetails extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  const ActionButton({
+    super.key,
+    required this.payment,
+    required this.house,
+  });
+
+  final Payment payment;
+  final House house;
+
+  @override
+  Widget build(BuildContext context) {
+    if (getIt<AuthService>().isAdmin &&
+        payment.state == PaymentState.pendingVerification) {
+      return Row(
+        children: [
+          ElevatedButton(
+              onPressed: () async {
+                await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Deseja confirmar esse pagamento?'),
+                    content: const Text('Essa ação é inreversível'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancelar')),
+                      ElevatedButton(
+                          onPressed: () async {
+                            payment.paidDate = DateTime.now();
+                            await getIt<PaymentsRepository>()
+                                .update(payment.id, payment);
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: const Text('Confirmar')),
+                    ],
+                  ),
+                );
+              },
+              child: const Text('Confirmar pagamento'))
+        ],
+      );
+    }
+    //
+    if (!getIt<AuthService>().isAdmin && payment.state != PaymentState.paid) {
+      return ElevatedButton(
+        onPressed: () async {
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
+            type: FileType.custom,
+          );
+
+          if (result != null) {
+            final file = result.files.single;
+            if (file.bytes == null) {
+              throw Exception('Arquivo vazio');
+            }
+            final date =
+                shortDateFormat.format(payment.dueDate).replaceAll('/', '-');
+            final name = 'comprovante_pagamento_$date.${file.extension}';
+            if (name.contains(RegExp(r'[/\\]+'))) {
+              throw Exception('Nome do arquivo não pode conter "/" nem "\\"');
+            }
+            final path = '${house.houseCode}/$name';
+            await deleteSameNameFiles(path);
+            await supabase.storage
+                .from('pagamentos')
+                .uploadBinary(path, file.bytes!);
+            payment.filePath = name;
+            await getIt<PaymentsRepository>().update(payment.id, payment);
+            await getIt<HousesController>().loadHouses();
+          }
+        },
+        child: const Text('Enviar comprovante'),
+      );
+    }
+    return Container();
   }
 }
 
