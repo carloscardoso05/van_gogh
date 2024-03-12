@@ -13,6 +13,7 @@ class HolderTranformer {
       'name': holder.name,
       'email': holder.email,
       'phone': holder.phone,
+      'is_admin': holder.isAdmin
     };
   }
 
@@ -22,6 +23,7 @@ class HolderTranformer {
       name: map['name'],
       email: map['email'],
       phone: map['phone'],
+      isAdmin: map['is_admin'],
     );
   }
 }

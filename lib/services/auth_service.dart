@@ -11,7 +11,7 @@ class AuthService extends ChangeNotifier {
   AuthResponse? auth;
   Holder? holder;
   bool isAuthenticated = false;
-  bool isAdmin = true;
+  bool isAdmin = false;
   User get grantedUser => auth!.user!;
 
   AuthService() {
@@ -22,6 +22,7 @@ class AuthService extends ChangeNotifier {
     final session = supabase.auth.currentSession;
     if (session != null) {
       auth = await supabase.auth.recoverSession(jsonEncode(session));
+      await loadUserData();
       isAuthenticated = true;
       notifyListeners();
     }
@@ -32,13 +33,15 @@ class AuthService extends ChangeNotifier {
         .signInWithPassword(email: email, password: password);
     isAuthenticated = true;
     auth = authResponse;
-    holder = Holder(
-      id: auth!.user!.id,
-      name: auth!.user!.userMetadata!['name'],
-      email: auth!.user!.email!,
-      phone: auth!.user!.userMetadata!['phone'],
-    );
+    await loadUserData();
     notifyListeners();
+  }
+
+  loadUserData() async {
+    holder = await getIt<HoldersRepository>().getByEmail(auth!.user!.email!);
+    holder!.name = auth!.user!.userMetadata!['name'];
+    holder!.phone = auth!.user!.userMetadata!['phone'];
+    isAdmin = holder!.isAdmin;
   }
 
   register({
@@ -48,14 +51,10 @@ class AuthService extends ChangeNotifier {
     String phone = "",
   }) async {
     await supabase.auth.signUp(
-        email: email, password: password, data: {'name': name, 'phone': phone});
+        email: email,
+        password: password,
+        data: {'name': name, 'phone': phone, 'is_admin': false});
     await login(email: email, password: password);
-    holder = Holder(
-      id: auth!.user!.id,
-      name: name,
-      email: email,
-      phone: phone,
-    );
     await getIt<HoldersRepository>().addHolder(holder!);
   }
 

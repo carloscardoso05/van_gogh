@@ -6,7 +6,7 @@ abstract class HoldersRepository {
   Future<List<Holder>> getAll();
   Future<List<Holder>> getByHouseId(int id);
   Future<Holder> getById(int id);
-  Future<Holder> getByUserId(int id);
+  Future<Holder> getByEmail(String email);
   Future<void> addHolder(Holder holder);
 }
 
@@ -39,9 +39,9 @@ class LocalHoldersRepository extends HoldersRepository {
   }
 
   @override
-  Future<Holder> getByUserId(int id) async {
+  Future<Holder> getByEmail(String email) async {
     final data =
-        await supabase.from('holders').select('*').eq('user_id', id).single();
+        await supabase.from('holders').select('*').eq('email', email).single();
     Holder holder = HolderTranformer.fromJson(data);
     return holder;
   }
