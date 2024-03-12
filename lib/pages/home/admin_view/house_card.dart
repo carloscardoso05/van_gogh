@@ -15,11 +15,15 @@ class HouseCard extends StatelessWidget {
     if (house.payments.isNotEmpty) {
       return Card(
         child: ListTile(
-            title: PaymentStateText(state: latestState),
-            trailing: Text(house.houseCode),
-            isThreeLine: true,
-            subtitle: HousePaymentDescription(house: house),
-            onTap: () => context.push('/houses/${house.houseCode}')),
+          title: PaymentStateText(state: latestState),
+          trailing: Text(
+            'Quadra: ${house.block} Nº: ${house.number}\nCódigo: ${house.houseCode}',
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
+          ),
+          isThreeLine: true,
+          subtitle: HousePaymentDescription(house: house),
+          onTap: () => context.push('/houses/${house.houseCode}'),
+        ),
       );
     }
     return const CircularProgressIndicator();
@@ -44,7 +48,6 @@ class HousePaymentDescription extends StatelessWidget {
     );
   }
 }
-
 
 class PaymentStateText extends StatelessWidget {
   const PaymentStateText({super.key, required this.state});

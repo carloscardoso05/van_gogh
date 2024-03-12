@@ -12,6 +12,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('Casas'),
         actions: [
           ElevatedButton(
             onPressed: getIt<AuthService>().logOut,
