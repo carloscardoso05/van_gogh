@@ -165,7 +165,7 @@ class ActionButton extends StatelessWidget {
 }
 
 class PaymentCard extends StatelessWidget {
-  const PaymentCard({
+  PaymentCard({
     super.key,
     required this.payment,
     required this.houseCode,
@@ -174,9 +174,12 @@ class PaymentCard extends StatelessWidget {
   final Payment payment;
   final String houseCode;
   final bool clickable;
+  final ShapeBorder? cardShape =
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: cardShape,
       child: ListTile(
         title: PaymentStateText(state: payment.state),
         isThreeLine: true,
@@ -184,6 +187,7 @@ class PaymentCard extends StatelessWidget {
         onTap: clickable
             ? () => context.push('/houses/$houseCode/payments/${payment.id}')
             : null,
+        shape: cardShape,
       ),
     );
   }

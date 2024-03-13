@@ -6,14 +6,17 @@ import 'package:van_gogh/helpers/formating.dart';
 import 'package:van_gogh/helpers/payment_helpers.dart';
 
 class HouseCard extends StatelessWidget {
-  const HouseCard({super.key, required this.house});
+  HouseCard({super.key, required this.house});
   final House house;
   PaymentState get latestState =>
       getMostDelayedPaymentOrLatest(house.payments).state;
+  final ShapeBorder? cardShape =
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
   @override
   Widget build(BuildContext context) {
     if (house.payments.isNotEmpty) {
       return Card(
+        shape: cardShape,
         child: ListTile(
           title: PaymentStateText(state: latestState),
           trailing: Text(
@@ -23,6 +26,7 @@ class HouseCard extends StatelessWidget {
           isThreeLine: true,
           subtitle: HousePaymentDescription(house: house),
           onTap: () => context.push('/houses/${house.houseCode}'),
+          shape: cardShape,
         ),
       );
     }
