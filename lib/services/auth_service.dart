@@ -50,12 +50,19 @@ class AuthService extends ChangeNotifier {
     required String name,
     String phone = "",
   }) async {
-    await supabase.auth.signUp(
+    auth = await supabase.auth.signUp(
         email: email,
         password: password,
         data: {'name': name, 'phone': phone, 'is_admin': false});
+    final newHolder = Holder(
+        id: auth!.user!.id,
+        name: name,
+        isAdmin: false,
+        email: email,
+        phone: phone);
+    await getIt<HoldersRepository>().addHolder(newHolder);
     await login(email: email, password: password);
-    await getIt<HoldersRepository>().addHolder(holder!);
+    notifyListeners();
   }
 
   logOut() async {

@@ -22,29 +22,41 @@ class HouseDetails extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text("Casa ${house.houseCode}"),
               Text("Número: ${house.number}"),
               Text("Quadra: ${house.block}"),
               Text("Código: ${house.houseCode}"),
               Text("Proprietário: ${house.holder ?? 'Ausente'}"),
-              Builder(
-                builder: (context) {
-                  if (payment == null) {
-                    return const Text("Todas as contas em dias");
-                  }
-                  return Column(
-                    children: [
-                      const Text('Pagamento mais atrasado'),
-                      PaymentCard(
-                        payment: payment!,
-                        houseCode: house.houseCode,
-                      ),
-                    ],
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Builder(
+                  builder: (context) {
+                    if (payment == null) {
+                      return const Text("Todas as contas em dias");
+                    }
+                    return Column(
+                      children: [
+                        const Text(
+                          'Pagamento pendente mais antigo',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        PaymentCard(
+                          payment: payment!,
+                          houseCode: house.houseCode,
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
               const Text(
                 "Todos os pagamentos",
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                ),
               ),
               ...house.payments.map((payment) =>
                   PaymentCard(payment: payment, houseCode: house.houseCode))

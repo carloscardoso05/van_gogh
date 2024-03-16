@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:van_gogh/main_theme.dart';
 import 'package:van_gogh/routes.dart';
 
 class MainApp extends StatelessWidget {
@@ -12,6 +13,7 @@ class MainApp extends StatelessWidget {
       routerDelegate: routes.routerDelegate,
       routeInformationParser: routes.routeInformationParser,
       routeInformationProvider: routes.routeInformationProvider,
+      theme: mainTheme,
     );
   }
 }
