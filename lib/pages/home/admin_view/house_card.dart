@@ -48,7 +48,7 @@ class HousePaymentDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${house.holder ?? "Sem proprietário"}\n${getPaymentDescription(payment)}',
+      '${house.holder?.name ?? "Sem proprietário"}\n${getPaymentDescription(payment)}',
     );
   }
 }

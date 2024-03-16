@@ -26,7 +26,7 @@ class HouseDetails extends StatelessWidget {
               Text("Número: ${house.number}"),
               Text("Quadra: ${house.block}"),
               Text("Código: ${house.houseCode}"),
-              Text("Proprietário: ${house.holder ?? 'Ausente'}"),
+              Text("Proprietário: ${house.holder?.name ?? 'Ausente'}"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Builder(

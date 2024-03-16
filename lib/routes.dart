@@ -13,10 +13,17 @@ final routes = GoRouter(
   refreshListenable: getIt<AuthService>(),
   redirect: (context, state) {
     final isAuthenticated = getIt<AuthService>().isAuthenticated;
+    final isAdmin = getIt<AuthService>().isAdmin;
     final isLoginRoute = state.fullPath == '/login';
     final isRegisterRoute = state.fullPath == '/register';
 
-    if (isAuthenticated && (isLoginRoute || isRegisterRoute)) return '/';
+    if (isAuthenticated && (isLoginRoute || isRegisterRoute)) {
+      if (isAdmin) return '/';
+      
+      final holder = getIt<AuthService>().holder!;
+      final house = getIt<HousesController>().getHouseByHolder(holder)!;
+      return '/houses/${house.houseCode}';
+    }
 
     if (!isAuthenticated && !isLoginRoute && !isRegisterRoute) return '/login';
 
